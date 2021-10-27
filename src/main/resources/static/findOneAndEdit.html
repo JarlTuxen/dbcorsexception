@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Find and Edit Student</title>
+</head>
+<body>
+
+<div>
+    <input id="student-id" placeholder="Add id for student to find">
+    <button id="btn-find">Find Student</button>
+</div>
+<p id="error1"></p>
+<form>
+    <p>ID: <span id="id-for-student"></span> </p>
+    <div><input id="f-name" placeholder="firstName" /></div>
+    <br />
+    <div><input id="l-name" placeholder="lastName"></div>
+    <br/>
+    <button id="btn-save">Save Changes</button>
+</form>
+<p id="status"></p>
+<p><a href="/">Back</a></p>
+
+<script>
+    const SERVER_URL = sessionStorage.getItem("SERVER_URL")
+
+    async function handleHttpErrorsAsync(res) {
+        if (!res.ok) {
+            const errorResponse = await res.json();
+            const error = new Error(errorResponse.message)
+            error.apiError = errorResponse
+            throw error
+        }
+        return res.json()
+    }
+
+    document.getElementById("btn-find").onclick = ()=>{
+        const SERVER_URL = sessionStorage.getItem("SERVER_URL");
+
+            fetch(SERVER_URL+"/"+document.getElementById("student-id").value)
+                .then(handleHttpErrorsAsync)
+                .then(d=> {
+                    document.getElementById("id-for-student").textContent = d.id
+                    document.getElementById("f-name").value=d.firstName
+                    document.getElementById("l-name").value=d.lastName
+                })
+                .catch(e => document.getElementById("error1").innerText = "Ups: " + e.message)
+        }
+
+
+    document.getElementById("btn-save").onclick = (evt)=>{
+            evt.preventDefault()
+            const newStudent = {}
+            newStudent.firstName = document.getElementById("f-name").value
+            newStudent.lastName = document.getElementById("l-name").value
+            const options = {
+                method: "PUT",
+                headers : {
+                    'Content-Type' : 'application/json'
+                },
+                body: JSON.stringify(newStudent)
+            }
+            fetch(SERVER_URL+"/"+document.getElementById("student-id").value,options)
+                .then(res=>res.json())
+                .then(p=> document.getElementById("status").innerText = JSON.stringify(p))
+        }
+
+</script>
+</body>
+</html>

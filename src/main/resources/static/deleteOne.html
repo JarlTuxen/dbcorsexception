@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Student</title>
+</head>
+<body>
+
+<div>
+    <input id="student-id" placeholder="Add ID for person to delete">
+    <button id="btn-delete">Delete Student</button>
+</div>
+
+<p id="status"></p>
+<p><a href="/">Back</a></p>
+
+<script>
+
+
+    document.getElementById("btn-delete").onclick = (evt)=> {
+        const SERVER_URL = sessionStorage.getItem("SERVER_URL")
+
+        async function handleHttpErrorsAsync(res) {
+            if (!res.ok) {
+                const errorResponse = await res.json();
+                const error = new Error(errorResponse.message)
+                error.apiError = errorResponse
+                throw error
+            }
+            return res.json()
+        }
+
+        document.getElementById("btn-save").onclick = (evt)=>{
+            evt.preventDefault()
+            const options = {
+                method: "DELETE",
+                headers : {
+                    'Content-Type' : 'application/json'
+                }
+            }
+            fetch(SERVER_URL+"/"+document.getElementById("student-id").value,options)
+                .then(res=>res.json())
+                .then(p=> document.getElementById("status").innerText = JSON.stringify(p))
+        }
+
+        /* TODO
+        Use fetch With SERVER_URL and method = DELETE to delete an existing person
+        Remember you need to provide fetch with an options object for anything but GET-requests as explained here:
+        https://docs.google.com/document/d/1keZvtIhEb7qFpa4LblPJLKETy1CskAf5GP4XczqaN-0/edit#heading=h.fyy0q5w1hdm5
+
+        Use fetch with SERVER_URL + the id to delete a Person
+        Update the p-tag with id="status" with info as to whether it was a success
+
+         */
+    }
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Student</title>
+</head>
+
+<body>
+<h1>Page Add</h1>
+<form>
+    <div><input id="f-name" placeholder="firstName" /></div>
+    <br />
+    <div><input id="l-name" placeholder="lastName"></div>
+    <button id="btn-save">Save</button>
+</form>
+<p id="status"></p>
+<p><a href="/">Back</a></p>
+
+
+<script>
+
+        const SERVER_URL = sessionStorage.getItem("SERVER_URL");
+        document.getElementById("btn-save").onclick = (evt)=>{
+            evt.preventDefault()
+            const newStudent = {}
+            newStudent.firstName = document.getElementById("f-name").value
+            newStudent.lastName = document.getElementById("l-name").value
+            const options = {
+                method: "POST",
+                headers : {
+                    'Content-Type' : 'application/json'
+                },
+                body: JSON.stringify(newStudent)
+            }
+            fetch(SERVER_URL,options)
+                .then(res=>res.json())
+                .then(p=> document.getElementById("status").innerText = JSON.stringify(p))
+        }
+
+
+
+</script>
+</body>
+
+</html>
