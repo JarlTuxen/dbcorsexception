@@ -1,5 +1,6 @@
 package dk.kea.dbcorsexception.controller;
 
+import dk.kea.dbcorsexception.exceptions.NotFoundException;
 import dk.kea.dbcorsexception.model.Student;
 import dk.kea.dbcorsexception.repository.StudentRepository;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin("*")
 @RequestMapping("api/students")
 public class StudentController {
 
@@ -31,17 +33,20 @@ public class StudentController {
 
     //HTTP GET (/students/{id}) - findById
     @GetMapping("/{id}")
-    public ResponseEntity<Optional<Student>> findById(@PathVariable Long id){
+    public Student findById(@PathVariable Long id){
         //hent student fra repository
-        Optional<Student> optionalStudent = studentRepository.findById(id);
+        /* Optional<Student> optionalStudent = studentRepository.findById(id);
         //er student fundet?
         if (optionalStudent.isPresent()){
             return ResponseEntity.status(HttpStatus.OK).body(optionalStudent);
         }
         else{
             //not found 404
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+            //return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            throw new NotFoundException("Not Found");
+        } */
+
+        return studentRepository.findById(id).orElseThrow(() -> new NotFoundException("Student not found"));
     }
 
     //HTTP Post (/students) - create

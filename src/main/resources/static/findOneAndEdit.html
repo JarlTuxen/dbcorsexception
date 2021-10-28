@@ -19,7 +19,7 @@
     <br/>
     <button id="btn-save">Save Changes</button>
 </form>
-<p id="status"></p>
+<p id="status">Waiting</p>
 <p><a href="/">Back</a></p>
 
 <script>
@@ -52,6 +52,7 @@
     document.getElementById("btn-save").onclick = (evt)=>{
             evt.preventDefault()
             const newStudent = {}
+            newStudent.id = document.getElementById("id-for-student").textContent
             newStudent.firstName = document.getElementById("f-name").value
             newStudent.lastName = document.getElementById("l-name").value
             const options = {
@@ -61,9 +62,12 @@
                 },
                 body: JSON.stringify(newStudent)
             }
+            const SERVER_URL = sessionStorage.getItem("SERVER_URL");
             fetch(SERVER_URL+"/"+document.getElementById("student-id").value,options)
-                .then(res=>res.json())
-                .then(p=> document.getElementById("status").innerText = JSON.stringify(p))
+                .then(res=>res.status)
+                .then(p=> {
+                    document.getElementById("status").innerText = p //"Student updated"
+                })
         }
 
 </script>
